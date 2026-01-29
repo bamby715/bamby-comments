@@ -2,15 +2,12 @@
   "name": "bamby-comments",
   "version": "1.0.0",
   "description": "GitHub Pages评论系统",
-  "main": "index.js",
   "scripts": {
-    "dev": "vercel dev"
+    "dev": "node -e \"console.log('Use: vercel dev directly')\"",
+    "start": "vercel dev"
   },
   "dependencies": {
     "mongodb": "^6.0.0"
-  },
-  "devDependencies": {
-    "vercel": "^28.0.0"
   },
   "engines": {
     "node": ">=18.x"
