@@ -1,37 +1,28 @@
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Content-Type', 'application/json');
-  
-  console.log('GET /api/comments called with:', req.query);
+const { MongoClient } = require('mongodb');
+
+const MONGODB_URI = process.env.MONGODB_URI;
+const client = new MongoClient(MONGODB_URI);
+
+module.exports = async (req, res) => {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
   
   try {
-    // 暂时返回模拟数据
-    const mockComments = [
-      {
-        _id: 'test-1',
-        postId: req.query.postId || 'default',
-        author: '测试用户',
-        content: '这是一条测试评论',
-        createdAt: new Date().toISOString(),
-        avatar: 'https://i.pravatar.cc/150?img=1'
-      },
-      {
-        _id: 'test-2', 
-        postId: req.query.postId || 'default',
-        author: '另一个用户',
-        content: '第二条测试评论',
-        createdAt: new Date(Date.now() - 86400000).toISOString(),
-        avatar: 'https://i.pravatar.cc/150?img=2'
-      }
-    ];
+    await client.connect();
+    const db = client.db('comments_db');
+    const collection = db.collection('comments');
     
-    return res.status(200).json(mockComments);
+    const { postId } = req.query;
+    const comments = await collection
+      .find({ postId })
+      .sort({ createdAt: -1 })
+      .toArray();
     
+    res.status(200).json(comments);
   } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({
-      error: 'Internal server error',
-      message: error.message
-    });
+    res.status(500).json({ error: error.message });
+  } finally {
+    await client.close();
   }
-}
+};
