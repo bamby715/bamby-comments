@@ -1,7 +1,17 @@
 {
   "name": "bamby-comments",
   "version": "1.0.0",
-  "dependencies": {},
+  "description": "GitHub Pages评论系统",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "mongodb": "^6.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^28.0.0"
+  },
   "engines": {
     "node": ">=18.x"
   }
